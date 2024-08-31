@@ -1,17 +1,17 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Determine the directory name of the current module.
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Base route for simple server status check
-app.get('/', (req, res) => {
-  res.send('Server is running successfully!');
-});
 
 // Example route to fetch data from the Fantasy Premier League's bootstrap-static endpoint
 app.get('/api/bootstrap-static', async (req, res) => {
@@ -46,7 +46,7 @@ app.get('/api/event/:gameweek/live', async (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 
