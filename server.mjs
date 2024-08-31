@@ -1,52 +1,33 @@
 import express from 'express';
 import fetch from 'node-fetch';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Determine the directory name of the current module.
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.use(express.static('public'));
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Example route to fetch data from the Fantasy Premier League's bootstrap-static endpoint
-app.get('/api/bootstrap-static', async (req, res) => {
-  try {
-    const response = await fetch('https://fantasy.premierleague.com/api/bootstrap-static/');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+// Fetch and log FPL data periodically
+async function fetchFPLData() {
+    try {
+        const response = await fetch('https://fantasy.premierleague.com/api/bootstrap-static/');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("FPL Data Fetched:", data);
+        // You might want to process the data or store it here
+    } catch (error) {
+        console.error('Failed to fetch FPL data:', error);
     }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).json({ error: 'Failed to fetch data' });
-  }
-});
+}
 
-// Example route to fetch live data for a specific gameweek
-app.get('/api/event/:gameweek/live', async (req, res) => {
-  const { gameweek } = req.params;
-  try {
-    const response = await fetch(`https://fantasy.premierleague.com/api/event/${gameweek}/live/`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error('Error fetching event data:', error);
-    res.status(500).json({ error: 'Failed to fetch event data' });
-  }
-});
+// Call fetchFPLData periodically
+setInterval(fetchFPLData, 3600000); // 3600000 milliseconds = 1 hour
 
-// Start the server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
+    fetchFPLData(); // Also fetch data when the server starts
 });
+
 
 
