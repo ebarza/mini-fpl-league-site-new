@@ -1,18 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('/api/bootstrap-static')
-        .then(response => response.json())
-        .then(data => {
-            const fplDataContainer = document.getElementById('fpl-data');
-            if (data) {
-                fplDataContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            } else {
-                fplDataContainer.innerHTML = 'No data available';
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-            document.getElementById('fpl-data').innerHTML = 'Failed to load data.';
-        });
+    fetch('/api/fpl-data')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data); // Log data to console for testing
+        displayData(data);
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
 });
+
+function displayData(data) {
+    const displayElement = document.getElementById('data-display');
+    displayElement.textContent = JSON.stringify(data, null, 2); // Display data as formatted JSON
+}
+
 
 
