@@ -71,9 +71,10 @@ document.getElementById('player-picks-form').addEventListener('submit', async fu
             } else {
                 data.picks.forEach(pick => {
                     // Log the playersData object to confirm it contains the expected data
-                    console.log('playersData object:', playersData);
                     const playerName = playersData[pick.element];
-                    console.log(`Player ID: ${pick.element}, Player Name: ${playerName}`);
+                    console.log(`Attempting to map Player ID: ${pick.element}`);
+                    console.log('Player Name Found:', playerName);
+
                     picksResult.innerHTML += `<p>${playerName ? playerName : `Player ID: ${pick.element}`} - Position: ${pick.position}</p>`;
                 });
             }
@@ -89,6 +90,7 @@ fetchAndDisplayStandings();
 
 // Fetch the player data when the page loads
 fetchPlayersData();
+
 
 
 
