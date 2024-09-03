@@ -1,7 +1,5 @@
 let playersData = {
-    201: "Example Player",  // Replace with an actual player name for testing
-    328: "Mohamed Salah",    // Known ID for Salah
-    // Add other mappings as needed for testing
+    328: "Mohamed Salah" // Keeping this for comparison, though it should be overwritten by dynamic fetch
 };
 
 // Fetch and store player data
@@ -12,7 +10,7 @@ function fetchPlayersData() {
             playersData = data.elements.reduce((acc, player) => {
                 acc[player.id] = player.web_name;
                 return acc;
-            }, playersData); // Start with the hardcoded data
+            }, playersData); // Start with existing hardcoded data for comparison
             console.log('Players Data Loaded:', playersData); // Log to ensure data is loaded
         })
         .catch(error => console.error('Error fetching player data:', error));
@@ -29,6 +27,7 @@ function fetchAndDisplayStandings() {
             playerSelect.innerHTML = ''; // Clear existing options
 
             data.standings.results.forEach((team, index) => {
+                // Populate standings table
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -39,6 +38,7 @@ function fetchAndDisplayStandings() {
                 `;
                 standingsTableBody.appendChild(row);
 
+                // Populate player select menu
                 const option = document.createElement('option');
                 option.value = team.entry; // Use the team ID
                 option.text = team.player_name; // Display the manager's name
@@ -65,6 +65,7 @@ document.getElementById('player-picks-form').addEventListener('submit', function
                 picksResult.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
                 data.picks.forEach(pick => {
+                    // Retrieve player name using player ID
                     const playerName = playersData[pick.element];
                     console.log(`Player ID: ${pick.element}, Player Name: ${playerName}`);
                     picksResult.innerHTML += `<p>${playerName ? playerName : `Player ID: ${pick.element}`} - Position: ${pick.position}</p>`;
@@ -79,6 +80,7 @@ fetchAndDisplayStandings();
 
 // Fetch the player data when the page loads
 fetchPlayersData();
+
 
 
 
