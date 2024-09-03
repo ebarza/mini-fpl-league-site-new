@@ -70,11 +70,9 @@ document.getElementById('player-picks-form').addEventListener('submit', async fu
                 picksResult.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
                 data.picks.forEach(pick => {
-                    // Log the playersData object to confirm it contains the expected data
+                    // Retrieve player name using player ID
                     const playerName = playersData[pick.element];
-                    console.log(`Attempting to map Player ID: ${pick.element}`);
-                    console.log('Player Name Found:', playerName);
-
+                    console.log(`Mapping Player ID: ${pick.element} to Name: ${playerName}`);
                     picksResult.innerHTML += `<p>${playerName ? playerName : `Player ID: ${pick.element}`} - Position: ${pick.position}</p>`;
                 });
             }
@@ -90,6 +88,7 @@ fetchAndDisplayStandings();
 
 // Fetch the player data when the page loads
 fetchPlayersData();
+
 
 
 
