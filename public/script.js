@@ -2,7 +2,7 @@ let playersData = {};
 
 // Fetch and store player data
 function fetchPlayersData() {
-    fetch('https://fantasy.premierleague.com/api/bootstrap-static/')
+    return fetch('https://fantasy.premierleague.com/api/bootstrap-static/')
         .then(response => response.json())
         .then(data => {
             playersData = data.elements.reduce((acc, player) => {
@@ -25,7 +25,6 @@ function fetchAndDisplayStandings() {
             playerSelect.innerHTML = ''; // Clear existing options
 
             data.standings.results.forEach((team, index) => {
-                // Populate standings table
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -36,7 +35,6 @@ function fetchAndDisplayStandings() {
                 `;
                 standingsTableBody.appendChild(row);
 
-                // Populate player select menu
                 const option = document.createElement('option');
                 option.value = team.entry; // Use the team ID
                 option.text = team.player_name; // Display the manager's name
@@ -47,13 +45,18 @@ function fetchAndDisplayStandings() {
 }
 
 // Add event listener to the player picks form
-document.getElementById('player-picks-form').addEventListener('submit', function(e) {
+document.getElementById('player-picks-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const teamId = document.getElementById('player-select').value;
     const gameweek = document.getElementById('gameweek-select').value;
 
     console.log(`Fetching picks for Team ID: ${teamId}, Gameweek: ${gameweek}`);
+
+    // Ensure playersData is fully loaded before using it
+    if (!Object.keys(playersData).length) {
+        await fetchPlayersData(); // Fetch if not loaded
+    }
 
     fetch(`/api/get-player-picks?teamId=${teamId}&gameweek=${gameweek}`)
         .then(response => response.json())
@@ -67,7 +70,8 @@ document.getElementById('player-picks-form').addEventListener('submit', function
                 picksResult.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
                 data.picks.forEach(pick => {
-                    // Retrieve player name using player ID
+                    // Log the playersData object to confirm it contains the expected data
+                    console.log('playersData object:', playersData);
                     const playerName = playersData[pick.element];
                     console.log(`Player ID: ${pick.element}, Player Name: ${playerName}`);
                     picksResult.innerHTML += `<p>${playerName ? playerName : `Player ID: ${pick.element}`} - Position: ${pick.position}</p>`;
@@ -85,6 +89,7 @@ fetchAndDisplayStandings();
 
 // Fetch the player data when the page loads
 fetchPlayersData();
+
 
 
 
