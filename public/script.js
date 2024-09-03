@@ -10,6 +10,7 @@ function fetchPlayersData() {
                 acc[player.id] = player.web_name;
                 return acc;
             }, {});
+            console.log('Players Data Loaded:', playersData); // Log to ensure data is loaded
         })
         .catch(error => console.error('Error fetching player data:', error));
 }
@@ -63,8 +64,10 @@ document.getElementById('player-picks-form').addEventListener('submit', function
                 picksResult.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
                 data.picks.forEach(pick => {
-                    const playerName = playersData[pick.element] || `Player ID: ${pick.element}`;
-                    picksResult.innerHTML += `<p>${playerName} - Position: ${pick.position}</p>`;
+                    // Retrieve player name using player ID
+                    const playerName = playersData[pick.element];
+                    console.log(`Player ID: ${pick.element}, Player Name: ${playerName}`);
+                    picksResult.innerHTML += `<p>${playerName ? playerName : `Player ID: ${pick.element}`} - Position: ${pick.position}</p>`;
                 });
             }
         })
