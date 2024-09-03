@@ -3,22 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Premier League Mini-League</title>
-    <link rel="stylesheet" href="style.css">
+    <title>FPL Mini-League Standings</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Fantasy Premier League Mini-League</h1>
-    </header>
-    <main>
-        <!-- Data container where API data will be displayed -->
-        <div id="data-container">Loading data...</div>
-    </main>
-    <footer>
-        <p>Footer content here</p>
-    </footer>
+    <div class="container">
+        <h1>FPL Mini-League Standings</h1>
+        <table id="fpl-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Team Name</th>
+                    <th>Manager Name</th>
+                    <th>GW Points</th>
+                    <th>Total Points</th>
+                </tr>
+            </thead>
+            <tbody id="fpl-standings-body">
+                <!-- Data will be injected here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
+
+
 
 

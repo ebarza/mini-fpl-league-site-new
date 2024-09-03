@@ -1,51 +1,42 @@
-/* Basic reset for padding and margin to remove browser defaults */
-body, h1, p {
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
-    padding: 0;
-  }
-  
-  /* Basic styling for the body, setting the font and background */
-  body {
-    font-family: Arial, sans-serif; /* Use a nice, readable font */
-    background-color: #f4f4f4; /* A light grey background */
-    color: #333; /* Dark grey text for readability */
-    line-height: 1.6; /* More readable line spacing */
-    padding: 20px; /* Padding around the content */
-  }
-  
-  /* Header styling */
-  header {
-    background: #004d99; /* A nice deep blue background */
-    color: #fff; /* White text color */
-    padding: 10px 20px; /* Padding inside the header */
-    text-align: center; /* Center the text horizontally */
-  }
-  
-  /* Main content area styling */
-  main {
-    max-width: 800px; /* Limit the width of the main content */
-    margin: 20px auto; /* Center the main block horizontally and add vertical spacing */
-    background: white; /* A white background for the main content */
-    padding: 20px; /* Padding inside the main content area */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* A subtle shadow for 3D effect */
-  }
-  
-  /* Footer styling */
-  footer {
-    text-align: center; /* Center the text horizontally */
-    padding: 20px 0; /* Padding inside the footer */
-    margin-top: 20px; /* Space above the footer */
-    font-size: 0.8em; /* Smaller font size */
-    color: #666; /* Dark gray text color */
-  }
-  
-  /* Additional styles for links */
-  a {
-    color: #0077cc; /* A pleasant blue */
-    text-decoration: none; /* No underlines on links */
-  }
-  
-  a:hover {
-    text-decoration: underline; /* Underline links on hover for clarity */
-  }
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #333;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
   
