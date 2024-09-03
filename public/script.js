@@ -1,6 +1,4 @@
-let playersData = {
-    328: "Mohamed Salah" // Keeping this for comparison, though it should be overwritten by dynamic fetch
-};
+let playersData = {};
 
 // Fetch and store player data
 function fetchPlayersData() {
@@ -10,7 +8,7 @@ function fetchPlayersData() {
             playersData = data.elements.reduce((acc, player) => {
                 acc[player.id] = player.web_name;
                 return acc;
-            }, playersData); // Start with existing hardcoded data for comparison
+            }, {});
             console.log('Players Data Loaded:', playersData); // Log to ensure data is loaded
         })
         .catch(error => console.error('Error fetching player data:', error));
@@ -55,9 +53,13 @@ document.getElementById('player-picks-form').addEventListener('submit', function
     const teamId = document.getElementById('player-select').value;
     const gameweek = document.getElementById('gameweek-select').value;
 
+    console.log(`Fetching picks for Team ID: ${teamId}, Gameweek: ${gameweek}`);
+
     fetch(`/api/get-player-picks?teamId=${teamId}&gameweek=${gameweek}`)
         .then(response => response.json())
         .then(data => {
+            console.log('API Response:', data); // Log the full response
+
             const picksResult = document.getElementById('picks-result');
             picksResult.innerHTML = '';
 
@@ -72,7 +74,10 @@ document.getElementById('player-picks-form').addEventListener('submit', function
                 });
             }
         })
-        .catch(error => console.error('Error fetching player picks:', error));
+        .catch(error => {
+            console.error('Error fetching player picks:', error);
+            document.getElementById('picks-result').innerHTML = `<p>Error fetching player picks</p>`;
+        });
 });
 
 // Initialize the page by fetching and displaying the standings
@@ -80,6 +85,7 @@ fetchAndDisplayStandings();
 
 // Fetch the player data when the page loads
 fetchPlayersData();
+
 
 
 
