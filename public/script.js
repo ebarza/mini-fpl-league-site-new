@@ -1,10 +1,25 @@
+let playersData = {};
+
+// Fetch and store player data
+function fetchPlayersData() {
+    fetch('https://fantasy.premierleague.com/api/bootstrap-static/')
+        .then(response => response.json())
+        .then(data => {
+            playersData = data.elements.reduce((acc, player) => {
+                acc[player.id] = player.web_name;
+                return acc;
+            }, {});
+        })
+        .catch(error => console.error('Error fetching player data:', error));
+}
+
 // Fetch and display league standings
-function fetchStandings() {
+function fetchAndDisplayStandings() {
     fetch('/api/fpl-standings')
         .then(response => response.json())
         .then(data => {
-            const standingsTableBody = document.querySelector('#standings-table tbody');
-            standingsTableBody.innerHTML = ''; // Clear any existing data
+            const standingsTableBody = document.getElementById('standings-table').querySelector('tbody');
+            standingsTableBody.innerHTML = ''; // Clear existing rows
 
             data.standings.results.forEach((team, index) => {
                 const row = document.createElement('tr');
@@ -18,12 +33,10 @@ function fetchStandings() {
                 standingsTableBody.appendChild(row);
             });
         })
-        .catch(error => {
-            console.error('Error fetching league standings:', error);
-        });
+        .catch(error => console.error('Error fetching standings:', error));
 }
 
-// Fetch and display player picks
+// Add event listener to the player picks form
 document.getElementById('player-picks-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -40,17 +53,20 @@ document.getElementById('player-picks-form').addEventListener('submit', function
                 picksResult.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
                 data.picks.forEach(pick => {
-                    picksResult.innerHTML += `<p>Player ID: ${pick.element}, Position: ${pick.position}</p>`;
+                    const playerName = playersData[pick.element] || `Player ID: ${pick.element}`;
+                    picksResult.innerHTML += `<p>${playerName} - Position: ${pick.position}</p>`;
                 });
             }
         })
-        .catch(error => {
-            console.error('Error fetching player picks:', error);
-        });
+        .catch(error => console.error('Error fetching player picks:', error));
 });
 
-// Initialize the page by fetching the standings
-fetchStandings();
+// Initialize the page by fetching and displaying the standings
+fetchAndDisplayStandings();
+
+// Fetch the player data when the page loads
+fetchPlayersData();
+
 
 
 
