@@ -1,0 +1,18 @@
+{
+    "builds": [
+      {
+        "src": "api/fpl-standings.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "public/**/*",
+        "use": "@vercel/static"
+      }
+    ],
+    "routes": [
+      { "src": "/api/fpl-standings", "dest": "/api/fpl-standings.js" },
+      { "src": "/(.*)", "dest": "/public/$1" }
+    ]
+  }
+  
+  
