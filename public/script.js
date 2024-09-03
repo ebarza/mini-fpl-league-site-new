@@ -27,7 +27,30 @@ fetch('/api/fpl-standings')
   })
   .catch(error => console.error('Error fetching FPL data:', error));
 
-
+  document.getElementById('player-picks-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+  
+    const teamId = document.getElementById('player-select').value;
+    const gameweek = document.getElementById('gameweek-select').value;
+  
+    fetch(`/api/get-player-picks?teamId=${teamId}&gameweek=${gameweek}`)
+      .then(response => response.json())
+      .then(data => {
+        const picksResult = document.getElementById('picks-result');
+        picksResult.innerHTML = '';
+  
+        if (data.error) {
+          picksResult.innerHTML = `<p>Error: ${data.error}</p>`;
+        } else {
+          data.picks.forEach(pick => {
+            picksResult.innerHTML += `<p>${pick.element}: ${pick.position}</p>`;
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching player picks:', error);
+      });
+  });
 
 
 

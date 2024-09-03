@@ -3,27 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FPL Mini-League Standings</title>
+    <title>FPL Mini League</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>FPL Mini-League Standings</h1>
-        <table id="fpl-table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Team Name</th>
-                    <th>Manager Name</th>
-                    <th>GW Points</th>
-                    <th>Total Points</th>
-                </tr>
-            </thead>
-            <tbody id="fpl-standings-body">
-                <!-- Data will be injected here by JavaScript -->
-            </tbody>
-        </table>
+    <h1>Welcome to the FPL Mini League</h1>
+    
+    <!-- Existing content here -->
+
+    <!-- New Player Picks Section -->
+    <div id="player-picks-section">
+      <h2>View Player Picks</h2>
+      <form id="player-picks-form">
+        <label for="player-select">Select Player:</label>
+        <select id="player-select">
+          <option value="4020">Player 1</option>
+          <option value="30431">Player 2</option>
+          <!-- Add options for all players -->
+        </select>
+
+        <label for="gameweek-select">Select Gameweek:</label>
+        <input type="number" id="gameweek-select" min="1" max="38" required>
+
+        <button type="submit">View Picks</button>
+      </form>
+
+      <div id="picks-result">
+        <!-- Player picks data will be displayed here -->
+      </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
