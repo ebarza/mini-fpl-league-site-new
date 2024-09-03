@@ -13,15 +13,18 @@ function fetchPlayersData() {
         .catch(error => console.error('Error fetching player data:', error));
 }
 
-// Fetch and display league standings
+// Fetch and display league standings, and populate the manager select menu
 function fetchAndDisplayStandings() {
     fetch('/api/fpl-standings')
         .then(response => response.json())
         .then(data => {
             const standingsTableBody = document.getElementById('standings-table').querySelector('tbody');
+            const playerSelect = document.getElementById('player-select');
             standingsTableBody.innerHTML = ''; // Clear existing rows
+            playerSelect.innerHTML = ''; // Clear existing options
 
             data.standings.results.forEach((team, index) => {
+                // Populate standings table
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -31,6 +34,12 @@ function fetchAndDisplayStandings() {
                     <td>${team.total}</td>
                 `;
                 standingsTableBody.appendChild(row);
+
+                // Populate player select menu
+                const option = document.createElement('option');
+                option.value = team.entry; // Use the team ID
+                option.text = team.player_name; // Display the manager's name
+                playerSelect.appendChild(option);
             });
         })
         .catch(error => console.error('Error fetching standings:', error));
@@ -66,6 +75,7 @@ fetchAndDisplayStandings();
 
 // Fetch the player data when the page loads
 fetchPlayersData();
+
 
 
 
