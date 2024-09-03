@@ -9,7 +9,7 @@ function fetchPlayersData() {
                 acc[player.id] = player.web_name;
                 return acc;
             }, {});
-            console.log('Players Data Loaded:', playersData); // Log to ensure data is loaded
+            console.log('Complete playersData object:', playersData); // Log the complete object
         })
         .catch(error => console.error('Error fetching player data:', error));
 }
@@ -70,9 +70,16 @@ document.getElementById('player-picks-form').addEventListener('submit', async fu
                 picksResult.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
                 data.picks.forEach(pick => {
+                    // Log the attempt to map the player ID
+                    console.log(`Attempting to map Player ID: ${pick.element}`);
+                    if (playersData.hasOwnProperty(pick.element)) {
+                        console.log(`Found player name: ${playersData[pick.element]} for ID: ${pick.element}`);
+                    } else {
+                        console.log(`No player name found for ID: ${pick.element}`);
+                    }
+
                     // Retrieve player name using player ID
                     const playerName = playersData[pick.element];
-                    console.log(`Mapping Player ID: ${pick.element} to Name: ${playerName}`);
                     picksResult.innerHTML += `<p>${playerName ? playerName : `Player ID: ${pick.element}`} - Position: ${pick.position}</p>`;
                 });
             }
