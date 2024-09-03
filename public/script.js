@@ -69,17 +69,12 @@ document.getElementById('player-picks-form').addEventListener('submit', async fu
             if (data.error) {
                 picksResult.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
-                data.picks.forEach(pick => {
-                    // Log the attempt to map the player ID
-                    console.log(`Attempting to map Player ID: ${pick.element}`);
-                    if (playersData.hasOwnProperty(pick.element)) {
-                        console.log(`Found player name: ${playersData[pick.element]} for ID: ${pick.element}`);
-                    } else {
-                        console.log(`No player name found for ID: ${pick.element}`);
-                    }
+                console.log('playersData:', playersData); // Log the playersData object
 
+                data.picks.forEach(pick => {
                     // Retrieve player name using player ID
                     const playerName = playersData[pick.element];
+                    console.log(`Attempting to map Player ID: ${pick.element}, Found Name: ${playerName}`);
                     picksResult.innerHTML += `<p>${playerName ? playerName : `Player ID: ${pick.element}`} - Position: ${pick.position}</p>`;
                 });
             }
