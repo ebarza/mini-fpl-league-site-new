@@ -1,10 +1,9 @@
 {
   "name": "mini-fpl-league-site",
   "version": "1.0.0",
-  "main": "server.js",
-  "type": "module",
+  "main": "server.cjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.cjs"
   },
   "dependencies": {
     "express": "^4.19.2",
@@ -12,7 +11,8 @@
     "cors": "^2.8.5"
   },
   "engines": {
-    "node": "20.x"
+    "node": "18.x"
   }
 }
+
 

@@ -1,6 +1,6 @@
-import express from 'express';
-import axios from 'axios';
-import Cors from 'cors';
+const express = require('express');
+const axios = require('axios');
+const Cors = require('cors');
 
 const router = express.Router();
 const cors = Cors({
@@ -47,7 +47,4 @@ router.get('/', async (req, res) => {
   }
 });
 
-export default router;
-
-
-
+module.exports = router;
