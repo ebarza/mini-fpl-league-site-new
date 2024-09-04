@@ -1,8 +1,8 @@
 let playersData = {};
 
-// Fetch and store player data using a CORS proxy
+// Fetch and store player data using the new API route
 function fetchPlayersData() {
-    return fetch('https://cors-anywhere.herokuapp.com/https://fantasy.premierleague.com/api/bootstrap-static/')
+    return fetch('/api/fpl-data')
         .then(response => response.json())
         .then(data => {
             playersData = data.elements.reduce((acc, player) => {
@@ -90,6 +90,7 @@ fetchAndDisplayStandings();
 
 // Fetch the player data when the page loads
 fetchPlayersData();
+
 
 
 

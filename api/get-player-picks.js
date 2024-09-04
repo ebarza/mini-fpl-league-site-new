@@ -1,5 +1,8 @@
+import express from 'express';
 import axios from 'axios';
 import Cors from 'cors';
+
+const router = express.Router();
 
 const cors = Cors({
   methods: ['GET', 'HEAD'],
@@ -16,7 +19,7 @@ function runMiddleware(req, res, fn) {
   });
 }
 
-export default async function handler(req, res) {
+router.get('/', async (req, res) => {
   await runMiddleware(req, res, cors);
 
   const { teamId, gameweek } = req.query;
@@ -33,4 +36,8 @@ export default async function handler(req, res) {
   } catch (error) {
     res.status(500).json({ error: 'Error fetching player picks' });
   }
-}
+});
+
+export default router;
+
+
