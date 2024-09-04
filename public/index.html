@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FPL Mini League</title>
+    <title>VIP FPL LEAGUE BG</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Welcome to the FPL Mini League</h1>
+    <header>
+        <h1>VIP FPL LEAGUE BG</h1>
+        <img src="man-silhouette-playing-soccer.png" alt="Site Logo" style="width: 150px; margin-bottom: 20px;">
+        <!-- Navigation Link to the new page -->
+        <nav>
+            <a href="player-picks.html">View Player Picks</a>
+        </nav>
+    </header>
 
     <!-- Standings Section -->
-    <div id="standings-section">
+    <div class="container">
         <h2>League Standings</h2>
         <table id="standings-table">
             <thead>
@@ -28,26 +36,8 @@
         </table>
     </div>
 
-    <!-- New Player Picks Section -->
-    <div id="player-picks-section">
-        <h2>View Player Picks</h2>
-        <form id="player-picks-form">
-            <label for="player-select">Select Manager:</label>
-            <select id="player-select">
-                <!-- Manager options will be populated here by JavaScript -->
-            </select>
-
-            <label for="gameweek-select">Select Gameweek:</label>
-            <input type="number" id="gameweek-select" min="1" max="38" required>
-
-            <button type="submit">View Picks</button>
-        </form>
-
-        <div id="picks-result">
-            <!-- Player picks data will be displayed here -->
-        </div>
-    </div>
-
     <script src="script.js"></script>
 </body>
 </html>
+
+

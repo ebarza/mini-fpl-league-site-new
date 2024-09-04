@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Player Picks - VIP FPL LEAGUE BG</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>VIP FPL LEAGUE BG</h1>
+        <img src="man-silhouette-playing-soccer.png" alt="Site Logo" style="width: 150px; margin-bottom: 20px;">
+        <!-- Navigation Link to go back to the main page -->
+        <nav>
+            <a href="index.html">Back to Home</a>
+        </nav>
+    </header>
+
+    <!-- Player Picks Section -->
+    <div class="container">
+        <h2>View Player Picks</h2>
+        <form id="player-picks-form">
+            <label for="player-select">Select Manager:</label>
+            <select id="player-select">
+                <!-- Manager options will be dynamically populated here -->
+            </select>
+
+            <label for="gameweek-select">Select Gameweek:</label>
+            <input type="number" id="gameweek-select" min="1" max="38" required>
+
+            <button type="submit">View Picks</button>
+        </form>
+
+        <div id="football-field">
+            <!-- Football field will be drawn here with player positions -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
