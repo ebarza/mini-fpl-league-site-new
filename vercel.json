@@ -22,7 +22,12 @@
       {
         "src": "/api/get-player-picks",
         "dest": "/api/get-player-picks.cjs"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/public/$1"
       }
     ]
   }
+  
   
