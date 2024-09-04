@@ -1,0 +1,28 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "server.cjs",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "api/**/*.cjs",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/fpl-data",
+        "dest": "/api/fpl-data.cjs"
+      },
+      {
+        "src": "/api/fpl-standings",
+        "dest": "/api/fpl-standings.cjs"
+      },
+      {
+        "src": "/api/get-player-picks",
+        "dest": "/api/get-player-picks.cjs"
+      }
+    ]
+  }
+  
