@@ -1,17 +1,12 @@
-
 import express from 'express';
 import axios from 'axios';
 import Cors from 'cors';
 
-// Initialize router
 const router = express.Router();
-
-// Initialize CORS middleware
 const cors = Cors({
   methods: ['GET', 'HEAD'],
 });
 
-// Helper method to wait for a middleware to execute before continuing
 function runMiddleware(req, res, fn) {
   return new Promise((resolve, reject) => {
     fn(req, res, (result) => {
@@ -23,17 +18,21 @@ function runMiddleware(req, res, fn) {
   });
 }
 
-// The route handler for fetching FPL player data
 router.get('/', async (req, res) => {
   await runMiddleware(req, res, cors);
 
   try {
+    console.log('Fetching FPL data...');
     const response = await axios.get('https://fantasy.premierleague.com/api/bootstrap-static/');
     res.status(200).json(response.data);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching FPL player data' });
+    console.error('Error fetching FPL data:', error.message);
+    res.status(500).json({
+      message: 'Error fetching FPL data',
+      error: error.toString(),
+      response: error.response ? error.response.data : null, // Log more details if available
+    });
   }
 });
 
 export default router;
-
