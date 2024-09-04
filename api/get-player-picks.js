@@ -1,25 +1,14 @@
-const express = require('express');
 const axios = require('axios');
-const Cors = require('cors');
 
-const router = express.Router();
-const cors = Cors({
-  methods: ['GET', 'HEAD'],
-});
+module.exports = async (req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-}
-
-router.get('/', async (req, res) => {
-  await runMiddleware(req, res, cors);
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
   const { teamId, gameweek } = req.query;
 
@@ -28,6 +17,7 @@ router.get('/', async (req, res) => {
   }
 
   try {
+    console.log(`Fetching picks for Team ID: ${teamId}, Gameweek: ${gameweek}...`);
     const response = await axios.get(
       `https://fantasy.premierleague.com/api/entry/${teamId}/event/${gameweek}/picks/`
     );
@@ -45,6 +35,5 @@ router.get('/', async (req, res) => {
       response: error.response ? error.response.data : null,
     });
   }
-});
+};
 
-module.exports = router;
