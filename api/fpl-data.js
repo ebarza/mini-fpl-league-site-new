@@ -27,12 +27,18 @@ router.get('/', async (req, res) => {
     res.status(200).json(response.data);
   } catch (error) {
     console.error('Error fetching FPL data:', error.message);
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    }
     res.status(500).json({
       message: 'Error fetching FPL data',
       error: error.toString(),
-      response: error.response ? error.response.data : null, // Log more details if available
+      response: error.response ? error.response.data : null,
     });
   }
 });
 
 export default router;
+
