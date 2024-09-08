@@ -105,33 +105,30 @@ button:hover {
     border: 2px solid white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: grid;
-    grid-template-rows: repeat(5, 1fr);
-    grid-template-columns: repeat(4, 1fr);
     background-image: url('football-field.png');
     background-size: cover;
 }
 
 .player-position {
     position: absolute;
-    width: 80px;  /* Fixed width for jersey containers */
-    height: 80px; /* Fixed height for jersey containers */
-    background-color: white;
-    border-radius: 10px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     text-align: center;
-    color: black;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
 }
 
 .player-position img {
-    max-width: 100%; /* Ensure images do not exceed the container */
-    max-height: 100%; /* Ensure images do not exceed the container */
-    object-fit: contain; /* Ensure images maintain their aspect ratio */
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.player-position p {
+    margin: 0;
+    font-size: 14px;
+    color: white;
 }
 
 /* Substitute Section */
@@ -143,11 +140,21 @@ button:hover {
 
 .substitute-player {
     margin: 0 10px;
+    text-align: center;
 }
 
 .substitute-player img {
     width: 50px;
-    height: auto;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
+.substitute-player p {
+    margin-top: 5px;
+    font-size: 14px;
 }
 
 /* Responsive Field */
@@ -156,20 +163,59 @@ button:hover {
         max-width: 100%;
     }
 
-    .player-position {
+    .player-position img {
         width: 60px;
         height: 60px;
+    }
+
+    .player-position p {
+        font-size: 12px;
     }
 }
 
 @media (max-width: 480px) {
-    .player-position {
+    .player-position img {
         width: 50px;
         height: 50px;
     }
 
-    .player-position img {
-        max-width: 100%;
-        max-height: 100%;
+    .player-position p {
+        font-size: 10px;
     }
+}
+
+/* Select Menu Styles */
+#player-select, #gameweek-select {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    width: calc(50% - 22px); /* Adjust for padding and border */
+    display: inline-block;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+#player-picks-form button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+#player-picks-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Total Points Display */
+#total-points {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
 }

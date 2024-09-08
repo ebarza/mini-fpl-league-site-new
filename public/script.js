@@ -1,62 +1,47 @@
-// Updated team mapping to match team IDs from the API to jersey filenames for the 2024/25 season
-const teamMap = {
-    1: 'arsenal',
-    2: 'aston-villa',
-    3: 'bournemouth',
-    4: 'brentford',
-    5: 'brighton',
-    7: 'chelsea',
-    8: 'crystal-palace',
-    9: 'everton',
-    10: 'fulham',
-    11: 'liverpool',
-    13: 'man-city',
-    14: 'man-utd',
-    15: 'newcastle',
-    16: 'nottingham-forest',
-    17: 'southampton',
-    18: 'tottenham',
-    19: 'west-ham',
-    20: 'wolverhampton',
-    21: 'leicester',
-    22: 'ipswich',
-};
-
-// Fetch and store player data
 let playersData = {};
 
-function fetchPlayersData() {
-    return fetch('/api/fpl-data')
+function fetchPlayersData(gameweek) {
+    return fetch(`/api/fpl-data?gameweek=${gameweek}`)
         .then(response => response.json())
         .then(data => {
+            console.log('Fetched data:', data); // Log the fetched data for verification
             playersData = data.elements.reduce((acc, player) => {
                 acc[player.id] = {
                     name: player.web_name,
-                    team: teamMap[player.team]
+                    photo: `https://resources.premierleague.com/premierleague/photos/players/250x250/p${player.code}.png`,
+                    points: player.event_points || 0 // Use event points for the selected gameweek
                 };
                 return acc;
             }, {});
-            console.log('Complete playersData object:', playersData);
+            console.log('Processed playersData object for GW', gameweek, playersData);
         })
         .catch(error => console.error('Error fetching player data:', error));
 }
 
-// Function to place a player on the football field
-function placePlayerOnField(playerId, position) {
+function placePlayerOnField(playerId, position, isCaptain = false, isViceCaptain = false) {
     const player = playersData[playerId];
-    const playerName = player ? player.name : `Player ID: ${playerId}`;
-    const teamName = player ? player.team : 'default';
-    const tShirtImageUrl = `team-jerseys/${teamName}.png`;
+    if (!player) return;
+
+    const playerName = player.name;
+    const playerPhoto = player.photo;
+    let playerPoints = player.points;
+
+    // Double points for Captain
+    if (isCaptain) {
+        playerPoints *= 2;
+    }
+    
+    const captainMark = isCaptain ? ' (C)' : isViceCaptain ? ' (VC)' : '';
 
     const footballField = document.getElementById('football-field');
     const playerDiv = document.createElement('div');
     playerDiv.className = 'player-position';
     playerDiv.innerHTML = `
-        <img src="${tShirtImageUrl}" alt="${playerName}">
-        <p>${playerName}</p>
+        <img src="${playerPhoto}" alt="${playerName}">
+        <p>${playerName}${captainMark}</p>
+        <p>${playerPoints} pts</p>
     `;
 
-    // Map positions to grid positions on the football field
     const positions = {
         1: { top: '80%', left: '45%' }, // GK
         2: { top: '65%', left: '15%' }, // DEF Left
@@ -77,29 +62,128 @@ function placePlayerOnField(playerId, position) {
     footballField.appendChild(playerDiv);
 }
 
-// Function to place a substitute outside the field
-function placeSubstitute(playerId, position, index) {
+function placeSubstitute(playerId, index) {
     const player = playersData[playerId];
-    const playerName = player ? player.name : `Player ID: ${playerId}`;
-    const teamName = player ? player.team : 'default';
-    const tShirtImageUrl = `team-jerseys/${teamName}.png`;
+    if (!player) return;
 
-    const footballField = document.getElementById('football-field');
+    const playerName = player.name;
+    const playerPhoto = player.photo;
+    const playerPoints = player.points;
+
+    const subContainer = document.querySelector('.substitute-container');
     const subDiv = document.createElement('div');
-    subDiv.className = 'substitute';
+    subDiv.className = 'substitute-player';
     subDiv.innerHTML = `
-        <img src="${tShirtImageUrl}" alt="${playerName}">
+        <img src="${playerPhoto}" alt="${playerName}">
         <p>${playerName}</p>
+        <p>${playerPoints} pts</p>
     `;
 
-    subDiv.style.left = `${index * 100}px`;
-
-    footballField.appendChild(subDiv);
+    subContainer.appendChild(subDiv);
 }
 
-// Fetch and display league standings
-function fetchAndDisplayStandings() {
-    fetch('/api/fpl-standings')
+function fetchAndDisplayPlayerPicks(teamId, gameweek) {
+    fetchPlayersData(gameweek)
+        .then(() => fetch(`/api/get-player-picks?teamId=${teamId}&gameweek=${gameweek}`))
+        .then(response => response.json())
+        .then(data => {
+            console.log('API Response:', data);
+
+            const footballField = document.getElementById('football-field');
+            footballField.innerHTML = ''; // Clear the field
+
+            const subContainer = document.querySelector('.substitute-container');
+            subContainer.innerHTML = ''; // Clear existing subs
+
+            if (data.error) {
+                footballField.innerHTML = `<p>Error: ${data.error}</p>`;
+                return;
+            }
+
+            let totalPoints = 0;
+            let substitutesUsed = 0;
+
+            const picks = data.picks || [];
+            const substitutes = data.substitutes || [];
+
+            // Determine if the captain and vice-captain played
+            let captainId = null;
+            let viceCaptainId = null;
+
+            picks.forEach(pick => {
+                const player = playersData[pick.element];
+                if (player) {
+                    if (pick.is_captain) captainId = pick.element;
+                    if (pick.is_vice_captain) viceCaptainId = pick.element;
+                }
+            });
+
+            // Process player picks
+            picks.forEach(pick => {
+                const player = playersData[pick.element];
+                if (player) {
+                    let playerPoints = player.points || 0;
+
+                    // Double points for captain
+                    if (pick.element === captainId) {
+                        playerPoints *= 2;
+                    }
+
+                    totalPoints += playerPoints;
+
+                    if (pick.position <= 11) {
+                        placePlayerOnField(pick.element, pick.position, pick.is_captain, pick.is_vice_captain);
+                    } else {
+                        // Display the substitute without including their points in the total
+                        placeSubstitute(pick.element, substitutesUsed);
+                        substitutesUsed++;
+                    }
+                }
+            });
+
+            // Handle substitutes only if a player didn't play
+            substitutes.forEach((sub, subIndex) => {
+                const player = playersData[sub.element];
+                if (player) {
+                    const isPlayerOnField = picks.find(pick => pick.element === sub.element);
+                    if (!isPlayerOnField && substitutesUsed < 3) {
+                        totalPoints += player.points || 0;
+                        placeSubstitute(sub.element, subIndex);
+                        substitutesUsed++;
+                    }
+                }
+            });
+
+            // Adjust for vice-captain if captain did not play
+            if (captainId && !picks.find(pick => pick.element === captainId)) {
+                const viceCaptain = playersData[viceCaptainId];
+                if (viceCaptain) {
+                    const viceCaptainPoints = viceCaptain.points || 0;
+                    totalPoints += viceCaptainPoints;
+                }
+            }
+
+            console.log('Final calculated total points:', totalPoints); // Log final total points for verification
+            document.getElementById('total-points').innerText = `Total Points: ${totalPoints}`;
+        })
+        .catch(error => {
+            console.error('Error fetching player picks:', error);
+            document.getElementById('football-field').innerHTML = `<p>Error fetching player picks</p>`;
+        });
+}
+
+document.getElementById('player-picks-form')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const teamId = document.getElementById('player-select').value;
+    const gameweek = document.getElementById('gameweek-select').value;
+
+    console.log(`Fetching picks for Team ID: ${teamId}, Gameweek: ${gameweek}`);
+    fetchAndDisplayPlayerPicks(teamId, gameweek);
+});
+
+function fetchAndDisplayStandings(gameweek) {
+    fetch(`/api/fpl-standings?gameweek=${gameweek}`)
         .then(response => response.json())
         .then(data => {
             const standingsTableBody = document.getElementById('standings-table').querySelector('tbody');
@@ -120,7 +204,6 @@ function fetchAndDisplayStandings() {
         .catch(error => console.error('Error fetching standings:', error));
 }
 
-// Populate manager select menu
 function populateManagerSelect() {
     fetch('/api/fpl-standings')
         .then(response => response.json())
@@ -138,58 +221,12 @@ function populateManagerSelect() {
         .catch(error => console.error('Error fetching manager list:', error));
 }
 
-// Add event listener to the player picks form
-document.getElementById('player-picks-form')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const teamId = document.getElementById('player-select').value;
-    const gameweek = document.getElementById('gameweek-select').value;
-
-    console.log(`Fetching picks for Team ID: ${teamId}, Gameweek: ${gameweek}`);
-
-    // Ensure playersData is fully loaded before using it
-    if (!Object.keys(playersData).length) {
-        await fetchPlayersData(); // Fetch if not loaded
-    }
-
-    fetch(`/api/get-player-picks?teamId=${teamId}&gameweek=${gameweek}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log('API Response:', data); // Log the full response
-
-            const footballField = document.getElementById('football-field');
-            footballField.innerHTML = ''; // Clear the field
-
-            if (data.error) {
-                footballField.innerHTML = `<p>Error: ${data.error}</p>`;
-            } else {
-                console.log('playersData:', playersData); // Log the playersData object
-
-                let subIndex = 0;
-                data.picks.forEach((pick, index) => {
-                    if (index < 11) {
-                        // Start 11 players
-                        placePlayerOnField(pick.element, pick.position);
-                    } else {
-                        // Substitutes
-                        placeSubstitute(pick.element, pick.position, subIndex);
-                        subIndex++;
-                    }
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching player picks:', error);
-            document.getElementById('football-field').innerHTML = `<p>Error fetching player picks</p>`;
-        });
-});
-
-// Initialize the page
+let currentGameweek = 1; // Set this based on default or user selection
 if (document.getElementById('standings-table')) {
-    fetchAndDisplayStandings();
+    fetchAndDisplayStandings(currentGameweek);
 }
 
 if (document.getElementById('player-picks-form')) {
     populateManagerSelect();
-    fetchPlayersData();
+    fetchPlayersData(currentGameweek);
 }
