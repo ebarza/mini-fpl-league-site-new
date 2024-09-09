@@ -1,53 +1,47 @@
 const baseUrl = 'http://localhost:3001/api/';
 let playersData = {};
-let currentLeagueId = 352180; // Your actual league ID
+let staticData = {};  // Declare staticData to hold data from bootstrap-static
 
-// Define a mapping of team IDs to their respective kit image URLs
-const localTeamKitUrls = {
-    1: "kits/Arsenal.png",           // Arsenal
-    2: "kits/Aston Villa.png",       // Aston Villa
-    3: "kits/Bournemouth.png",       // Bournemouth
-    4: "kits/Brentford.png",         // Brentford
-    5: "kits/Brighton.png",          // Brighton
-    6: "kits/Chelsea.png",           // Chelsea
-    7: "kits/Crystal Palace.png",    // Crystal Palace
-    8: "kits/Everton.png",           // Everton
-    9: "kits/Fulham.png",            // Fulham
-    10: "kits/Ipswich.png",          // Ipswich Town
-    11: "kits/Leicester.png",        // Leicester City
-    12: "kits/Liverpool.png",        // Liverpool
-    13: "kits/Man City.png",         // Manchester City
-    14: "kits/Man Utd.png",          // Manchester United
-    15: "kits/Newcastle.png",        // Newcastle United
-    16: "kits/Nott'm Forest.png",    // Nott'm Forest
-    17: "kits/Southampton.png",      // Southampton
-    18: "kits/Spurs.png",            // Spurs
-    19: "kits/West Ham.png",         // West Ham
-    20: "kits/Wolves.png"            // Wolves
-};
-
-// Function to get the team kit URL based on team ID
-function getTeamKitUrl(teamId) {
-    return localTeamKitUrls[teamId] || 'kits/placeholder.png';
-}
-
-// Fetch static data (players, teams, etc.)
+// Fetch static data
 function fetchStaticData() {
     return fetch(`${baseUrl}bootstrap-static/`)
         .then(response => response.json())
         .then(data => {
-            console.log('Static Data:', data);
-            return data;
+            staticData = data;
+            console.log('Static Data:', staticData);
         })
         .catch(error => console.error('Error fetching static data:', error));
 }
 
-// Fetch data for a specific player and store gameweek-specific data
+// Function to get team ID for a player
+function getTeamIdForPlayer(playerId) {
+    if (staticData && staticData.elements) {
+        console.log(`Looking for player ID: ${playerId}`);
+        const player = staticData.elements.find(element => element.id === playerId);
+        if (player) {
+            console.log(`Found player data for ID ${playerId}:`, player);
+            return player.team;  // This is the team ID
+        } else {
+            console.log(`No player found with ID: ${playerId}`);
+            console.log('Available player IDs:', staticData.elements.map(element => element.id));
+        }
+    }
+    return undefined;
+}
+
+// Initialize the application
+function initializeApp() {
+    fetchStaticData().then(() => {
+        // Continue with other initialization tasks here, if any
+    });
+}
+
+// Function to fetch player data for a specific gameweek
 function fetchPlayerDataForGameweek(playerId) {
     return fetch(`${baseUrl}element-summary/${playerId}/`)
         .then(response => response.json())
         .then(data => {
-            console.log(`Full Player Data for ID ${playerId}:`, data);  // Log full player data to understand structure
+            console.log('Full Player Data:', data);
 
             const gameweekData = data.history.reduce((acc, gw) => {
                 acc[gw.round] = {
@@ -57,10 +51,142 @@ function fetchPlayerDataForGameweek(playerId) {
                 return acc;
             }, {});
 
-            // Use the `team` field to extract the team ID
-            const teamId = data.team;
+            let teamId = getTeamIdForPlayer(playerId);
+            if (!teamId) {
+                console.error(`Team ID is undefined for player ID ${playerId}. Full data:`, data);
+            } else {
+                console.log(`Extracted Team ID for Player ID ${playerId}: ${teamId}`);
+            }
 
-            console.log(`Extracted Team ID for Player ID ${playerId}: ${teamId}`);
+            const playerPhotoUrl = getTeamKitUrl(teamId);
+
+            console.log(`Fetching kit for team ID: ${teamId}, URL: ${playerPhotoUrl}`);
+
+            playersData[playerId] = {
+                name: data.web_name || 'Unknown Player',  // Ensure the name is populated
+                photo: playerPhotoUrl,
+                gameweekData
+            };
+
+            console.log(`Player data stored for ID ${playerId}:`, playersData[playerId]);
+
+            return playersData[playerId];
+        })
+        .catch(error => console.error(`Error fetching player data for ID ${playerId}:`, error));
+}
+
+function fetchPlayerDataForGameweek(playerId) {
+    return fetch(`${baseUrl}element-summary/${playerId}/`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Full Player Data:', data);
+
+            const gameweekData = data.history.reduce((acc, gw) => {
+                acc[gw.round] = {
+                    points: gw.total_points,
+                    minutes: gw.minutes
+                };
+                return acc;
+            }, {});
+
+            // Use static data to get the team ID
+            let teamId = getTeamIdForPlayer(playerId);
+            if (!teamId) {
+                console.error(`Team ID is undefined for player ID ${playerId}. Full data:`, data);
+            } else {
+                console.log(`Extracted Team ID for Player ID ${playerId}: ${teamId}`);
+            }
+
+            // Get the player's name from the static data
+            const player = staticData.elements.find(element => element.id === playerId);
+            const playerName = player ? player.web_name : 'Unknown Player';
+
+            // Use local team kit images or placeholder
+            const playerPhotoUrl = getTeamKitUrl(teamId);
+
+            console.log(`Fetching kit for team ID: ${teamId}, URL: ${playerPhotoUrl}`);
+
+            // Ensure player data is being stored correctly
+            playersData[playerId] = {
+                name: playerName,  // Use the web_name from static data
+                photo: playerPhotoUrl,
+                gameweekData
+            };
+
+            console.log(`Stored player data for ID ${playerId}:`, playersData[playerId]);
+
+            return playersData[playerId];
+        })
+        .catch(error => console.error(`Error fetching player data for ID ${playerId}:`, error));
+}
+
+
+
+// Wait until the DOM is fully loaded to start the initialization
+document.addEventListener('DOMContentLoaded', initializeApp);
+let currentLeagueId = 352180; // Your actual league ID
+
+// Define a mapping of team IDs to their respective kit image URLs
+const localTeamKitUrls = {
+    1: "kits/Arsenal.png",           // Arsenal
+    2: "kits/Aston-Villa.png",       // Aston Villa
+    3: "kits/Bournemouth.png",       // Bournemouth
+    4: "kits/Brentford.png",         // Brentford
+    5: "kits/Brighton.png",          // Brighton
+    6: "kits/Chelsea.png",           // Chelsea
+    7: "kits/Crystal-Palace.png",    // Crystal Palace
+    8: "kits/Everton.png",           // Everton
+    9: "kits/Fulham.png",            // Fulham
+    10: "kits/Ipswich.png",          // Ipswich Town
+    11: "kits/Leicester.png",        // Leicester City
+    12: "kits/Liverpool.png",        // Liverpool
+    13: "kits/Man-City.png",         // Manchester City
+    14: "kits/Man-Utd.png",          // Manchester United
+    15: "kits/Newcastle.png",        // Newcastle United
+    16: "kits/Nott'm-Forest.png",    // Nott'm Forest
+    17: "kits/Southampton.png",      // Southampton
+    18: "kits/Spurs.png",            // Spurs
+    19: "kits/West-Ham.png",         // West Ham
+    20: "kits/Wolves.png"            // Wolves
+};
+
+// Function to get the team kit URL based on team ID
+function getTeamKitUrl(teamId) {
+    return localTeamKitUrls[teamId] || 'kits/placeholder.png';
+}
+
+// Fetch data for a specific player and store gameweek-specific data
+function fetchPlayerDataForGameweek(playerId) {
+    return fetch(`${baseUrl}element-summary/${playerId}/`)
+        .then(response => response.json())
+        .then(data => {
+            // Log the full player data to inspect its structure
+            console.log('Full Player Data:', data);
+
+            console.log('History Data for Player ID:', playerId, data.history);
+
+            if (data.history && data.history.length > 0) {
+                console.log('First History Entry for Player ID:', playerId, data.history[0]);
+            
+                console.log('Available Keys in First History Entry:', Object.keys(data.history[0]));
+            }
+
+            const gameweekData = data.history.reduce((acc, gw) => {
+                acc[gw.round] = {
+                    points: gw.total_points,
+                    minutes: gw.minutes
+                };
+                return acc;
+            }, {});
+
+            // Extract the team ID using the static data
+            const teamId = getTeamIdForPlayer(playerId);
+
+            if (!teamId) {
+                console.error(`Team ID is undefined for player ID ${playerId}. Full data:`, data);
+            } else {
+                console.log(`Extracted Team ID for Player ID ${playerId}: ${teamId}`);
+            }
 
             // Use local team kit images or placeholder
             const playerPhotoUrl = getTeamKitUrl(teamId);
