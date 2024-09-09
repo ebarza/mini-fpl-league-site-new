@@ -7,31 +7,50 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <a href="index.html"><img src="man-silhouette-playing-soccer.png" alt="Logo"></a>
-        <h1>VIP FPL LEAGUE BG</h1>
-    </header>
+    <div class="container">
+        <h2>League Standings</h2>
+        <table id="standings-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Team Name</th>
+                    <th>Manager Name</th>
+                    <th>GW Points</th>
+                    <th>Total Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Standings data will be populated here -->
+            </tbody>
+        </table>
+    </div>
 
     <div class="container">
-        <h2>View Player Picks</h2>
         <form id="player-picks-form">
-            <div>
-                <label for="player-select">Select Manager:</label>
-                <select id="player-select"></select>
-            </div>
-            <div>
-                <label for="gameweek-select">Select Gameweek:</label>
-                <input type="number" id="gameweek-select" value="1" min="1" max="38">
-            </div>
+            <label for="player-select">Select Manager:</label>
+            <select id="player-select"></select>
+            <label for="gameweek-select">Select Gameweek:</label>
+            <select id="gameweek-select">
+                <!-- Options dynamically populated -->
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <!-- Add more gameweeks as necessary -->
+            </select>
             <button type="submit">View Picks</button>
         </form>
+    </div>
 
-        <div id="total-points">Total Points: 0</div>
-        <div id="football-field"></div>
+    <div id="football-field" class="container"></div>
 
+    <div class="container">
         <div class="substitute-container">
-            <!-- Substitutes will be added here -->
+            <!-- Substitutes will be populated here -->
         </div>
+    </div>
+
+    <div class="container">
+        <p id="total-points">Total Points: 0</p>
     </div>
 
     <script src="script.js"></script>

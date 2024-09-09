@@ -1,18 +1,30 @@
 const express = require('express');
+const request = require('request');
+const cors = require('cors');
 const app = express();
-const PORT = 3001; // You can use any available port
 
-app.get('/api/fpl-data', async (req, res) => {
-    try {
-        const fetch = await import('node-fetch').then(mod => mod.default);
-        const response = await fetch('https://fantasy.premierleague.com/api/bootstrap-static/');
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch data from FPL API' });
-    }
+// Enable CORS for all routes
+app.use(cors());
+
+app.get('/api/*', (req, res) => {
+    const apiUrl = req.url.replace('/api/', '');
+    request(
+        { url: `https://fantasy.premierleague.com/api/${apiUrl}` },
+        (error, response, body) => {
+            if (error) {
+                res.status(500).send(error);
+            } else {
+                // Set CORS headers manually (if needed)
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+                res.send(body);
+            }
+        }
+    );
 });
 
-app.listen(PORT, () => {
-    console.log(`Proxy server is running on http://localhost:${PORT}`);
+const port = 3001;
+app.listen(port, () => {
+    console.log(`Proxy server is running on http://localhost:${port}`);
 });
