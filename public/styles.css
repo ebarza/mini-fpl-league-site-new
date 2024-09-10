@@ -41,9 +41,6 @@ h1 {
 h2 {
     text-align: center;
     color: #343a40;
-}
-
-h2 {
     margin-bottom: 40px;
 }
 
@@ -107,6 +104,10 @@ button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-image: url('football-field.png');
     background-size: cover;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 5px;
 }
 
 .player-position {
@@ -115,11 +116,32 @@ button:hover {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    width: 60px; /* Reduced width */
+    margin-left: -30px; /* Adjust for the smaller width */
 }
 
+.goalkeeper {
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.defender1 { top: 20%; left: 25%; }
+.defender2 { top: 20%; left: 50%; transform: translateX(-50%); }
+.defender3 { top: 20%; left: 75%; }
+.defender4 { top: 20%; left: 50%; transform: translateX(50%); }
+
+.midfielder1 { top: 45%; left: 20%; }
+.midfielder2 { top: 45%; left: 40%; }
+.midfielder3 { top: 45%; left: 60%; }
+.midfielder4 { top: 45%; left: 80%; }
+
+.forward1 { top: 70%; left: 40%; }
+.forward2 { top: 70%; left: 60%; }
+
 .player-position img {
-    width: 80px;
-    height: 80px;
+    width: 60px; /* Reduced image size */
+    height: 60px; /* Reduced image size */
     object-fit: cover;
     border-radius: 10px;
     margin-bottom: 5px;
@@ -127,20 +149,24 @@ button:hover {
 
 .player-position p {
     margin: 0;
-    font-size: 14px;
+    font-size: 12px; /* Slightly smaller text */
     color: white;
+    font-weight: bold;
 }
 
 /* Substitute Section */
 .substitute-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-around; /* Spread them across the width */
+    align-items: center; /* Vertically align items */
     margin-top: 20px;
+    padding: 0 20px; /* Optional: Add padding to the sides */
 }
 
 .substitute-player {
-    margin: 0 10px;
     text-align: center;
+    flex: 1; /* Each substitute will take equal width */
+    max-width: 100px; /* Set a maximum width for each substitute */
 }
 
 .substitute-player img {
@@ -155,25 +181,15 @@ button:hover {
 .substitute-player p {
     margin-top: 5px;
     font-size: 14px;
-}
+    color: black;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100px; /* Match this to the max-width of the container */
 
-/* Responsive Field */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    #football-field {
-        max-width: 100%;
-    }
-
-    .player-position img {
-        width: 60px;
-        height: 60px;
-    }
-
-    .player-position p {
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 480px) {
     .player-position img {
         width: 50px;
         height: 50px;
@@ -182,40 +198,26 @@ button:hover {
     .player-position p {
         font-size: 10px;
     }
-}
 
-/* Select Menu Styles */
-#player-select, #gameweek-select {
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    width: calc(50% - 22px); /* Adjust for padding and border */
-    display: inline-block;
-    background-color: #f8f9fa;
-    color: #333;
-}
+    .substitute-player img {
+        width: 40px;
+        height: 40px;
+    }
 
-#player-picks-form button {
-    padding: 10px 15px;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: inline-block;
-    margin-top: 10px;
-}
-
-#player-picks-form button:hover {
-    background-color: #0056b3;
+    .substitute-player p {
+        font-size: 12px;
+    }
 }
 
 /* Total Points Display */
 #total-points {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     text-align: center;
     margin: 20px 0;
+    background-color: #fff; /* White background */
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #333; /* Dark text color */
 }

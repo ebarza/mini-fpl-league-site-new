@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Navigation to go back to the main page -->
+    <div class="container">
+        <a href="index.html" style="display: block; margin-bottom: 20px;">Back to Main Page</a>
+    </div>
+
     <div class="container">
         <h2>League Standings</h2>
         <table id="standings-table">
@@ -41,16 +46,77 @@
         </form>
     </div>
 
-    <div id="football-field" class="container"></div>
-
+    <!-- Total Points Display above the field -->
     <div class="container">
-        <div class="substitute-container">
-            <!-- Substitutes will be populated here -->
+        <p id="total-points">Total Points: 76</p> <!-- Example points -->
+    </div>
+
+    <!-- Football Field Layout -->
+    <div id="football-field" class="container">
+        <div class="player-position goalkeeper">
+            <img src="path-to-goalkeeper-image.png" alt="Goalkeeper">
+            <p>Henderson 2 pts</p>
+        </div>
+        <div class="player-position defender1">
+            <img src="path-to-defender1-image.png" alt="Defender 1">
+            <p>Murphy 1 pts</p>
+        </div>
+        <div class="player-position defender2">
+            <img src="path-to-defender2-image.png" alt="Defender 2">
+            <p>Hall 5 pts</p>
+        </div>
+        <div class="player-position defender3">
+            <img src="path-to-defender3-image.png" alt="Defender 3">
+            <p>Alexander-Arnold 8 pts</p>
+        </div>
+        <div class="player-position defender4">
+            <img src="path-to-defender4-image.png" alt="Defender 4">
+            <p>Pedro Porro 9 pts</p>
+        </div>
+        <div class="player-position midfielder1">
+            <img src="path-to-midfielder1-image.png" alt="Midfielder 1">
+            <p>Salah (C) 28 pts</p>
+        </div>
+        <div class="player-position midfielder2">
+            <img src="path-to-midfielder2-image.png" alt="Midfielder 2">
+            <p>Diogo J. 8 pts</p>
+        </div>
+        <div class="player-position midfielder3">
+            <img src="path-to-midfielder3-image.png" alt="Midfielder 3">
+            <p>Nkunku 1 pts</p>
+        </div>
+        <div class="player-position forward1">
+            <img src="path-to-forward1-image.png" alt="Forward 1">
+            <p>Haaland 7 pts</p>
+        </div>
+        <div class="player-position forward2">
+            <img src="path-to-forward2-image.png" alt="Forward 2">
+            <p>Isak (VC) 5 pts</p>
+        </div>
+        <div class="player-position forward3">
+            <img src="path-to-forward3-image.png" alt="Forward 3">
+            <p>Calvert-Lewin 2 pts</p>
         </div>
     </div>
 
-    <div class="container">
-        <p id="total-points">Total Points: 0</p>
+    <!-- Substitutes Section -->
+    <div class="substitute-container">
+        <div class="substitute-player">
+            <img src="path-to-sub1-image.png" alt="Sub 1">
+            <p>Robinson 2 pts</p>
+        </div>
+        <div class="substitute-player">
+            <img src="path-to-sub2-image.png" alt="Sub 2">
+            <p>Winks 2 pts</p>
+        </div>
+        <div class="substitute-player">
+            <img src="path-to-sub3-image.png" alt="Sub 3">
+            <p>Johnson 0 pts</p>
+        </div>
+        <div class="substitute-player">
+            <img src="path-to-sub4-image.png" alt="Sub 4">
+            <p>Matthews 0 pts</p>
+        </div>
     </div>
 
     <script src="script.js"></script>

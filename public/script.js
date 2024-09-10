@@ -167,7 +167,6 @@ function fetchPlayerDataForGameweek(playerId) {
 
             if (data.history && data.history.length > 0) {
                 console.log('First History Entry for Player ID:', playerId, data.history[0]);
-            
                 console.log('Available Keys in First History Entry:', Object.keys(data.history[0]));
             }
 
@@ -179,8 +178,8 @@ function fetchPlayerDataForGameweek(playerId) {
                 return acc;
             }, {});
 
-            // Extract the team ID using the static data
-            const teamId = getTeamIdForPlayer(playerId);
+            // Now let's try to extract the team ID
+            let teamId = getTeamIdForPlayer(playerId);
 
             if (!teamId) {
                 console.error(`Team ID is undefined for player ID ${playerId}. Full data:`, data);
@@ -194,8 +193,9 @@ function fetchPlayerDataForGameweek(playerId) {
             // Log to verify URL correctness
             console.log(`Fetching kit for team ID: ${teamId}, URL: ${playerPhotoUrl}`);
 
+            // Assign the player's web_name to the name property
             playersData[playerId] = {
-                name: data.web_name,
+                name: staticData.elements.find(element => element.id === playerId).web_name,
                 photo: playerPhotoUrl,
                 gameweekData
             };
@@ -204,6 +204,7 @@ function fetchPlayerDataForGameweek(playerId) {
         })
         .catch(error => console.error(`Error fetching player data for ID ${playerId}:`, error));
 }
+
 
 // Fetch a team's picks for a specific gameweek
 function fetchTeamPicks(teamId, gameweek) {
@@ -227,27 +228,27 @@ function fetchLeagueStandings(leagueId) {
         .catch(error => console.error(`Error fetching league standings for League ID ${leagueId}:`, error));
 }
 
-// Define player positions on the field
+// Define player positions on the field (rotated 180 degrees)
 const positions = {
-    1: { top: '80%', left: '45%' }, // GK
-    2: { top: '65%', left: '15%' }, // DEF Left
-    3: { top: '65%', left: '35%' }, // DEF Center Left
-    4: { top: '65%', left: '55%' }, // DEF Center Right
-    5: { top: '65%', left: '75%' }, // DEF Right
-    6: { top: '45%', left: '15%' }, // MID Left
-    7: { top: '45%', left: '35%' }, // MID Center Left
-    8: { top: '45%', left: '55%' }, // MID Center Right
-    9: { top: '45%', left: '75%' }, // MID Right
-    10: { top: '20%', left: '35%' }, // FWD Left
-    11: { top: '20%', left: '55%' }  // FWD Right
+    1: { top: '20%', left: '45%' }, // GK (was 80%)
+    2: { top: '35%', left: '75%' }, // DEF Right (was 65% left: 15%)
+    3: { top: '35%', left: '55%' }, // DEF Center Right (was 65% left: 35%)
+    4: { top: '35%', left: '35%' }, // DEF Center Left (was 65% left: 55%)
+    5: { top: '35%', left: '15%' }, // DEF Left (was 65% left: 75%)
+    6: { top: '55%', left: '75%' }, // MID Right (was 45% left: 15%)
+    7: { top: '55%', left: '55%' }, // MID Center Right (was 45% left: 35%)
+    8: { top: '55%', left: '35%' }, // MID Center Left (was 45% left: 55%)
+    9: { top: '55%', left: '15%' }, // MID Left (was 45% left: 75%)
+    10: { top: '80%', left: '55%' }, // FWD Right (was 20% left: 35%)
+    11: { top: '80%', left: '35%' }  // FWD Left (was 20% left: 55%)
 };
 
 // Fallback mapping for positions beyond the starting 11
 const fallbackPositions = {
-    12: { top: '80%', left: '15%' }, // Substitute 1
-    13: { top: '80%', left: '35%' }, // Substitute 2
-    14: { top: '80%', left: '55%' }, // Substitute 3
-    15: { top: '80%', left: '75%' }, // Substitute 4
+    12: { top: '115%', left: '10%' }, // Substitute 1 (left-most)
+    13: { top: '115%', left: '30%' }, // Substitute 2
+    14: { top: '115%', left: '50%' }, // Substitute 3
+    15: { top: '115%', left: '70%' }  // Substitute 4 (right-most)
 };
 
 // Place player on the field in the UI
@@ -258,7 +259,7 @@ function placePlayerOnField(playerId, position, gameweek, isCaptain = false, isV
         return;
     }
 
-    const playerName = player.name;
+    const playerName = player.name; // Make sure this is correctly retrieved
     const playerPhoto = player.photo;
     let playerPoints = player.gameweekData[gameweek].points;
 
@@ -267,6 +268,10 @@ function placePlayerOnField(playerId, position, gameweek, isCaptain = false, isV
     }
     
     const captainMark = isCaptain ? ' (C)' : isViceCaptain ? ' (VC)' : '';
+
+    console.log(`Rendering player on field: ${playerName} (ID: ${playerId}) with photo ${playerPhoto}`);
+
+    
 
     // Determine the correct position
     const positionData = positions[position] || fallbackPositions[position];
@@ -280,7 +285,7 @@ function placePlayerOnField(playerId, position, gameweek, isCaptain = false, isV
     playerDiv.className = 'player-position';
     playerDiv.innerHTML = `
         <img src="${playerPhoto}" alt="${playerName}">
-        <p>${playerName}${captainMark}</p>
+        <p>${playerName}${captainMark}</p> <!-- Player name should be displayed here -->
         <p>${playerPoints} pts</p>
     `;
 
@@ -289,6 +294,7 @@ function placePlayerOnField(playerId, position, gameweek, isCaptain = false, isV
 
     footballField.appendChild(playerDiv);
 }
+
 
 // Place a substitute in the UI
 function placeSubstitute(playerId, gameweek, index) {
